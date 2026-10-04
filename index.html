@@ -1854,55 +1854,71 @@
         ];
 
         /* ============================================================
-           סנכרון מגיליון Google Sheets — כל לשונית = מדריך/ה אחד/ת.
-           הגיליון פתוח לצפייה עם הקישור, ולכן ניתן לקרוא כל לשונית
-           ישירות דרך כתובת ה-export, בלי צורך ב"פרסום לאינטרנט" נפרד.
+           סנכרון מגיליון Google Sheets "סטאז׳רים תשפז" — לשונית גיליון1 בלבד.
+           עמודה B (מדריך.ה) קובעת לאיזה מדריך משויך כל סטאז׳ר.
+           שמות המדריכים מקוצרים לשם פרטי (למשל "סיגל וינטרוב" => "סיגל").
+           שורות בלי מדריך בעמודה B לא נכנסות לרשימה.
            ============================================================ */
-        const INTERN_SHEET_PUBLISHED_KEY = "2PACX-1vQsVWrJq77S4weIHxTEYN3mWt5vGm1fwl0g0emL7vjd58ftRS0tTbuSZTl7pRLLFSo_ngH3dp5wK2fo";
-        const MENTOR_SHEET_TABS = [
-            { mentor: "סיגל", gid: "403947999" },
-            { mentor: "שגיא", gid: "1002" },
-            { mentor: "שירן", gid: "179614923" },
-            { mentor: "עידן", gid: "1001" },
-            { mentor: "אסף", gid: "1191688057" },
-            { mentor: "מורן", gid: "688317322" }
-        ];
+        const INTERN_SHEET_ID = "1ytaLEbcih_Y9KKcm-7Y4dY5ZjWhajDV0KTUwFkB-LPI";
+        const INTERN_SHEET_GID = "0";
+        // אם הגיליון מפורסם לאינטרנט (קובץ → שיתוף → פרסום לאינטרנט → CSV), הדביקי כאן את המפתח
+        // שמתחיל ב-2PACX- מתוך קישור הפרסום. אם נשאר ריק, האתר ינסה לקרוא דרך קישור השיתוף.
+        const INTERN_SHEET_PUBLISHED_KEY = "";
 
-        function internTabCsvUrl(gid) {
-            return `https://docs.google.com/spreadsheets/d/e/${INTERN_SHEET_PUBLISHED_KEY}/pub?gid=${gid}&single=true&output=csv`;
+        function internSheetCsvUrl() {
+            if (INTERN_SHEET_PUBLISHED_KEY) {
+                return `https://docs.google.com/spreadsheets/d/e/${INTERN_SHEET_PUBLISHED_KEY}/pub?gid=${INTERN_SHEET_GID}&single=true&output=csv`;
+            }
+            return `https://docs.google.com/spreadsheets/d/${INTERN_SHEET_ID}/gviz/tq?tqx=out:csv&gid=${INTERN_SHEET_GID}`;
         }
 
-        async function fetchMentorTab(mentor, gid) {
-            const res = await fetch(internTabCsvUrl(gid), { cache: "no-store" });
-            if (!res.ok) throw new Error(`HTTP ${res.status} עבור ${mentor}`);
+        function normalizeMentorName(raw) {
+            const first = (raw || "").toString().trim().split(/\s+/)[0] || "";
+            return first;
+        }
+
+        function normalizeCityName(raw) {
+            const c = (raw || "").toString().trim();
+            if (c === "רמהש" || c === 'רמה"ש' || c === "רמה״ש") return "רמת השרון";
+            if (c === "תל אביב יפו" || c === "תל אביב-יפו") return "תל אביב";
+            return c;
+        }
+
+        async function fetchInternSheet() {
+            const res = await fetch(internSheetCsvUrl(), { cache: "no-store" });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const csvText = await res.text();
             const wb = XLSX.read(csvText, { type: "string" });
             const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: "" });
             if (!rows.length) return [];
             const header = rows[0].map(h => (h || "").toString().trim());
+            const find = (fn, fallback) => { const i = header.findIndex(fn); return i > -1 ? i : fallback; };
             const idx = {
-                lastName: header.indexOf("שם משפחה"),
-                firstName: header.indexOf("שם פרטי"),
-                school: header.indexOf("שם בית הספר ששובצת"),
-                city: header.indexOf("עיר בית הספר"),
-                schoolType: header.findIndex(h => h.indexOf('סוג ביה"ס') > -1 || h.indexOf("סוג בית") > -1),
-                phone: header.findIndex(h => h.indexOf("טלפון") > -1)
+                mentor: find(h => h.indexOf("מדריך") > -1, 1),
+                lastName: find(h => h.indexOf("סטאז") > -1 && h.indexOf("משפחה") > -1, 2),
+                firstName: find(h => h.indexOf("סטאז") > -1 && h.indexOf("פרטי") > -1, 3),
+                school: find(h => h.indexOf("בית-ספר") > -1 || (h.indexOf("בית") > -1 && h.indexOf("שיבוץ") > -1), 7),
+                city: find(h => h.indexOf("עיר") > -1, 8),
+                schoolType: find(h => h.indexOf("סוג") > -1, 9),
+                phone: find(h => h === "טלפון" || h.indexOf("טלפון") === 0, 12)
             };
             const out = [];
             for (let i = 1; i < rows.length; i++) {
                 const r = rows[i];
                 const firstName = (r[idx.firstName] || "").toString().trim();
                 const lastName = (r[idx.lastName] || "").toString().trim();
+                const mentor = normalizeMentorName(r[idx.mentor]);
                 if (!firstName && !lastName) continue;
+                if (!mentor) continue;
                 out.push({
                     id: `${mentor}-${firstName}-${lastName}`.replace(/\s+/g, ""),
                     firstName, lastName,
                     fullName: `${firstName} ${lastName}`.trim(),
                     mentor,
                     school: (r[idx.school] || "").toString().trim(),
-                    city: (r[idx.city] || "").toString().trim(),
-                    schoolType: idx.schoolType > -1 ? (r[idx.schoolType] || "").toString().trim() : "",
-                    phone: idx.phone > -1 ? (r[idx.phone] || "").toString().trim() : ""
+                    city: normalizeCityName(r[idx.city]),
+                    schoolType: (r[idx.schoolType] || "").toString().trim(),
+                    phone: (r[idx.phone] || "").toString().trim()
                 });
             }
             return out;
@@ -1921,26 +1937,27 @@
         }
 
         async function loadInternDataFromSheet() {
-            const errors = [];
-            const results = await Promise.all(
-                MENTOR_SHEET_TABS.map(t => fetchMentorTab(t.mentor, t.gid).catch(e => { errors.push(t.mentor + ': ' + e.message); return null; }))
-            );
-            const merged = dedupeInterns(results.filter(r => r !== null).flat());
-            if (merged.length) {
-                INTERN_DATA = merged;
-                write("pe-intern-cache", INTERN_DATA);
-                toast(`✅ נטענו ${merged.length} סטאז׳רים מהגיליון (${MENTOR_SHEET_TABS.length - errors.length}/${MENTOR_SHEET_TABS.length} לשוניות)`);
-            }
-            if (errors.length) {
-                console.error('שגיאות בטעינת לשוניות:', errors);
-                toast(`⚠️ נכשלה טעינת ${errors.length} לשוניות מהגיליון — משתמשים ברשימה השמורה`);
+            try {
+                const merged = dedupeInterns(await fetchInternSheet());
+                if (merged.length) {
+                    INTERN_DATA = merged;
+                    write("pe-intern-cache-v2", INTERN_DATA);
+                    const mentors = new Set(merged.map(x => x.mentor)).size;
+                    toast(`✅ נטענו ${merged.length} סטאז׳רים מהגיליון (${mentors} מדריכים)`);
+                } else {
+                    toast("⚠️ הגיליון נקרא אבל לא נמצאו בו סטאז׳רים עם מדריך בעמודה B");
+                }
+            } catch (e) {
+                console.error("שגיאה בטעינת הגיליון:", e);
+                toast("⚠️ נכשלה הטעינה מהגיליון — משתמשים ברשימה השמורה");
             }
         }
         {
-            const cached = read("pe-intern-cache", null);
+            const cached = read("pe-intern-cache-v2", null);
             if (cached && Array.isArray(cached) && cached.length) INTERN_DATA = cached;
         }
         loadInternDataFromSheet();
+
 
         const blankDraft = () => ({
             name: '',
