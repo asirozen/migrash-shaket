@@ -1903,13 +1903,17 @@
                 phone: find(h => h === "טלפון" || h.indexOf("טלפון") === 0, 12)
             };
             const out = [];
+            const stats = { namedRows: 0, noMentor: 0, totalRows: rows.length };
             for (let i = 1; i < rows.length; i++) {
                 const r = rows[i];
                 const firstName = (r[idx.firstName] || "").toString().trim();
                 const lastName = (r[idx.lastName] || "").toString().trim();
-                const mentor = normalizeMentorName(r[idx.mentor]);
+                const rawMentor = (r[idx.mentor] || "").toString().trim();
                 if (!firstName && !lastName) continue;
-                if (!mentor) continue;
+                if (rawMentor.indexOf("מדריך") > -1 && lastName.indexOf("משפחה") > -1) continue; // שורת כותרת שנקראה כנתונים
+                stats.namedRows++;
+                const mentor = normalizeMentorName(rawMentor);
+                if (!mentor) { stats.noMentor++; continue; }
                 out.push({
                     id: `${mentor}-${firstName}-${lastName}`.replace(/\s+/g, ""),
                     firstName, lastName,
@@ -1921,6 +1925,7 @@
                     phone: (r[idx.phone] || "").toString().trim()
                 });
             }
+            out.stats = stats;
             return out;
         }
 
@@ -1938,12 +1943,17 @@
 
         async function loadInternDataFromSheet() {
             try {
-                const merged = dedupeInterns(await fetchInternSheet());
+                const raw = await fetchInternSheet();
+                const stats = raw.stats || {};
+                const merged = dedupeInterns(raw);
                 if (merged.length) {
                     INTERN_DATA = merged;
                     write("pe-intern-cache-v2", INTERN_DATA);
-                    const mentors = new Set(merged.map(x => x.mentor)).size;
-                    toast(`✅ נטענו ${merged.length} סטאז׳רים מהגיליון (${mentors} מדריכים)`);
+                    const perMentor = {};
+                    merged.forEach(x => { perMentor[x.mentor] = (perMentor[x.mentor] || 0) + 1; });
+                    console.log("סנכרון גיליון:", { שורותשנקראו: stats.totalRows, שורותעםשם: stats.namedRows, ללאמדריך: stats.noMentor, כפילויותשהוסרו: raw.length - merged.length, לפימדריך: perMentor });
+                    const mentors = Object.keys(perMentor).length;
+                    toast(`✅ נטענו ${merged.length} סטאז׳רים (${mentors} מדריכים) · נקראו ${stats.namedRows} שורות עם שם, ${stats.noMentor} ללא מדריך, ${raw.length - merged.length} כפילויות`);
                 } else {
                     toast("⚠️ הגיליון נקרא אבל לא נמצאו בו סטאז׳רים עם מדריך בעמודה B");
                 }
