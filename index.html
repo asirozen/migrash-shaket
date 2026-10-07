@@ -2223,9 +2223,9 @@
                 ${authError ? `<div class="auth-error">${esc(authError)}</div>` : ''}
                 <form onsubmit="event.preventDefault(); doLogin();">
                     <label>דוא״ל</label>
-                    <input id="auth-email" type="email" autocomplete="username" placeholder="name@example.com" value="${esc(read('pe-last-email',''))}">
+                    <input id="auth-email" type="email" autocomplete="off" placeholder="name@example.com" value="${esc(read('pe-last-email',''))}">
                     <label>סיסמה</label>
-                    <input id="auth-pass" type="password" autocomplete="current-password" placeholder="••••••••">
+                    <input id="auth-pass" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" dir="ltr" style="-webkit-text-security:disc;text-security:disc" placeholder="••••••••">
                     <button type="submit" class="primary" ${authBusy?'disabled':''}>${authBusy?'מתחבר…':'התחברות →'}</button>
                 </form>
                 <button type="button" class="auth-link" ${authBusy?'disabled':''} onclick="doForgotPassword()">שכחת/י סיסמה? לחצי כאן לאיפוס</button>
