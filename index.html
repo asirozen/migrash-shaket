@@ -2663,17 +2663,36 @@
         async function makePDF() {
             const sheet = document.getElementById('pdf-sheet');
             sheet.innerHTML = pdfData();
-            const canvas = await html2canvas(sheet, { scale: 2, backgroundColor: '#fffdf9', useCORS: true });
-            const img = canvas.toDataURL('image/png');
+            const SC = 2;
+            const canvas = await html2canvas(sheet, { scale: SC, backgroundColor: '#fffdf9', useCORS: true });
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
-            const pageW = 210, pageH = 297;
-            const imgH = canvas.height * pageW / canvas.width;
-            let y = 0;
-            while (y < imgH) {
-                if (y > 0) pdf.addPage();
-                pdf.addImage(img, 'PNG', 0, -y, pageW, imgH);
-                y += pageH;
+            const W = canvas.width;                       // px at scale
+            const pageHpx = Math.round(W * 297 / 210);    // full page height in canvas px
+            const margin = Math.round(36 * SC);           // top/bottom margin per page
+            const usable = pageHpx - 2 * margin;
+            const top0 = sheet.getBoundingClientRect().top;
+            const total = canvas.height;
+            // safe break points: bottoms of atomic blocks (never right after a heading)
+            const cuts = [...sheet.querySelectorAll('.pdf-row, .pdf-criterion, .pdf-summary p, [style*="margin-top:12px"], [style*="margin-top:16px"]')]
+                .map(el => Math.round((el.getBoundingClientRect().bottom - top0) * SC))
+                .filter(v => v > 0 && v < total).sort((x, y) => x - y);
+            let start = 0, first = true;
+            while (start < total - 4) {
+                let end = Math.min(start + usable, total);
+                if (end < total) {
+                    const ok = cuts.filter(v => v > start + usable * 0.35 && v <= end);
+                    if (ok.length) end = ok[ok.length - 1];
+                }
+                const page = document.createElement('canvas');
+                page.width = W; page.height = pageHpx;
+                const ctx = page.getContext('2d');
+                ctx.fillStyle = '#fffdf9'; ctx.fillRect(0, 0, W, pageHpx);
+                ctx.drawImage(canvas, 0, start, W, end - start, 0, margin, W, end - start);
+                if (!first) pdf.addPage();
+                pdf.addImage(page.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 210, 297);
+                first = false;
+                start = end;
             }
             return pdf;
         }
