@@ -13,20 +13,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
     </script>
     <style>
-        /* Design: מגרש שקט — quiet-court functionalism, RTL, field-green status cues and one-tap mobile actions. */
+        /* Design: מגרש שקט, redesign: bright court colors taken from the supervision logo. Original: quiet-court functionalism, RTL, field-green status cues and one-tap mobile actions. */
         :root {
-            --ink: #18333b;
-            --ink-soft: #607378;
-            --sand: #f5efe4;
-            --paper: #fffdf9;
-            --line: #e7ded0;
-            --green: #2f8f68;
-            --green-soft: #e3f1e9;
-            --amber: #d58a28;
-            --amber-soft: #fff0d7;
-            --red: #c9554d;
-            --red-soft: #fbe6e2;
-            --shadow: 0 22px 56px rgba(24, 51, 59, .11);
+            --ink: #1B2433;
+            --ink-soft: #5B6577;
+            --sand: #F6F7FB;
+            --paper: #FFFFFF;
+            --line: #E3E7EF;
+            --primary: #2F5BEA;
+            --primary-dark: #2147C9;
+            --primary-soft: #E8EEFF;
+            --green: #12924F;
+            --green-soft: #E3F7EC;
+            --amber: #FF8A1F;
+            --amber-text: #B65A00;
+            --amber-soft: #FFF0E0;
+            --red: #D93A40;
+            --red-soft: #FDE8E8;
+            --sun: #FFD23F;
+            --sun-soft: #FFF6CC;
+            --shadow: 0 18px 44px rgba(27, 36, 51, .08);
             --radius: 14px
         }
         * {
@@ -1015,7 +1021,7 @@
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 14px;
-            background: #f8f3ea;
+            background: #F5F7FB;
             border: 1px solid var(--line)
         }
         .stats-panel {
@@ -1023,7 +1029,7 @@
             padding: 18px;
             border: 1px solid var(--line);
             border-radius: 16px;
-            background: linear-gradient(135deg, #fffdf9, #f8f3ea)
+            background: linear-gradient(135deg, #fffdf9, #F5F7FB)
         }
         .stats-title {
             display: flex;
@@ -1226,7 +1232,7 @@
             width: 794px;
             padding: 48px;
             background: #fffdf9;
-            color: #18333b;
+            color: #1B2433;
             font-family: Assistant, Arial, sans-serif;
             direction: rtl
         }
@@ -1237,23 +1243,23 @@
         #pdf-sheet .pdf-meta {
             padding: 16px;
             margin: 18px 0;
-            border: 1px solid #e7ded0;
+            border: 1px solid #E3E7EF;
             border-radius: 12px;
-            background: #f8f3ea;
+            background: #F5F7FB;
             line-height: 1.8
         }
         .pdf-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid #eee5d8
+            border-bottom: 1px solid #E9ECF2
         }
         .pdf-row:last-child {
             border-bottom: 0
         }
         .pdf-criterion {
             padding: 11px 0;
-            border-bottom: 1px solid #eee5d8
+            border-bottom: 1px solid #E9ECF2
         }
         .pdf-criterion strong {
             display: block;
@@ -1261,7 +1267,7 @@
         }
         .pdf-criterion span {
             font-size: 13px;
-            color: #607378
+            color: #5B6577
         }
         .pdf-summary {
             margin-top: 18px
@@ -1274,7 +1280,7 @@
             white-space: pre-wrap;
             line-height: 1.5;
             margin: 0;
-            color: #607378
+            color: #5B6577
         }
         @media(max-width:700px) {
             .topbar {
@@ -1618,7 +1624,141 @@
             font-weight: 800;
             margin-inline-start: 8px;
         }
-    </style>
+    
+        /* ===== Redesign layer: bright, light. Blue = the only action color; green/orange/red only for status meaning. ===== */
+        :root { --logo-stripe: repeating-linear-gradient(115deg, #2F5BEA 0 34px, #1FA463 34px 60px, #FFD23F 60px 82px, #FF8A1F 82px 104px, #E5484D 104px 122px) }
+        body { background: radial-gradient(circle at 6% -4%, rgba(47, 91, 234, .07), transparent 34rem), radial-gradient(circle at 96% 8%, rgba(255, 210, 63, .12), transparent 28rem), var(--sand) }
+        h1, h2 { font-weight: 800 }
+        ::-webkit-scrollbar-thumb { background: #CBD3E1; border-color: var(--sand) }
+        ::-webkit-scrollbar-thumb:hover { background: #AEB8CA }
+        button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid rgba(47, 91, 234, .4) }
+
+        /* header */
+        .national-logo-wrap { position: relative; box-shadow: 0 6px 18px rgba(27, 36, 51, .05) }
+        .national-logo-wrap:after { content: ""; position: absolute; right: 0; left: 0; bottom: -1px; height: 4px; background: var(--logo-stripe) }
+        .topbar { background: rgba(246, 247, 251, .9); border-bottom-color: var(--line) }
+        .topbar-inner { background: rgba(255, 255, 255, .96) }
+        .mark { background: linear-gradient(145deg, #4B74F2, var(--primary) 60%, var(--primary-dark)); box-shadow: 0 6px 14px rgba(47, 91, 234, .28) }
+        .header-actions button:hover, .secondary:hover { border-color: var(--primary) }
+        .save-btn { background: var(--primary); box-shadow: 0 8px 18px rgba(47, 91, 234, .28) }
+        .save-btn:hover { background: var(--primary-dark); box-shadow: 0 12px 24px rgba(47, 91, 234, .32) }
+        .header-actions .active-nav { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-dark); box-shadow: none }
+
+        /* intro + session card */
+        .eyebrow, .kicker { color: var(--primary) }
+        .field-line, .field-line:after { background: var(--primary) }
+        h1 em, h2 em { color: var(--primary) }
+        .session { background: #FFFFFF; box-shadow: 0 10px 26px rgba(27, 36, 51, .06) }
+        .session-icon { background: var(--primary-soft); color: var(--primary) }
+        .session-meta { color: #7C8598 }
+        .progress { background: #E6EAF2 }
+        .progress i { background: linear-gradient(90deg, #6E8CF5, var(--primary)) }
+
+        /* tabs */
+        .nav { background: none }
+        .nav button { color: #737C8F }
+        .nav button:hover { color: var(--ink) }
+        .nav button.active:after { background: var(--primary); height: 4px }
+        .nav b { color: #9AA3B5 }
+        .nav .active b { color: var(--primary) }
+
+        /* panels + form fields */
+        .panel { border-color: var(--line) }
+        .time { background: var(--primary-soft); color: var(--primary-dark) }
+        .field input, .field textarea, .field select, .settings input, .settings textarea, .quick-note, .filter input, .note-category-row select { background: #FFFFFF }
+        .field input:hover, .field select:hover, .settings input:hover { border-color: #C5CDDB }
+        .field input:focus, .field textarea:focus, .field select:focus, .settings input:focus, .settings textarea:focus, .quick-note:focus, .filter input:focus, .note-category-row select:focus, .auth-card input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(47, 91, 234, .15) }
+        .primary { background: linear-gradient(155deg, #4B74F2, var(--primary) 60%, var(--primary-dark)); box-shadow: 0 10px 24px rgba(47, 91, 234, .28) }
+        .primary:hover { box-shadow: 0 14px 30px rgba(47, 91, 234, .34) }
+
+        /* observation: status colors carry the meaning */
+        .section-title:before { color: var(--primary) }
+        .criterion { background: #FFFFFF }
+        .criterion:before { width: 4px; background: #DDE2EC }
+        .criterion.is-good { border-color: #BDE6CF; background: linear-gradient(270deg, #F3FBF6, #FFFFFF 60%) }
+        .criterion.is-watch { border-color: #FFD3A8; background: linear-gradient(270deg, #FFF7EE, #FFFFFF 60%) }
+        .criterion.is-urgent { border-color: #F5BEBF; background: linear-gradient(270deg, #FEF2F2, #FFFFFF 60%) }
+        .number { color: #98A1B3 }
+        .status { min-height: 46px; background: #FFFFFF; border-radius: 11px }
+        .status:hover { border-color: #C5CDDB; color: var(--ink) }
+        .is-watch .status.selected { color: var(--ink) }
+        .note-category-row .add-note-btn { background: var(--primary) }
+        .note-item { background: var(--primary-soft); border-right-color: var(--primary) }
+        .note-item .note-category { color: var(--primary-dark) }
+        .section-notes-area { box-shadow: 0 2px 8px rgba(27, 36, 51, .04) }
+
+        /* summary: bright instead of dark */
+        .summary-hero { background: linear-gradient(135deg, #3A66F0, var(--primary) 55%, var(--primary-dark)); box-shadow: 0 18px 40px rgba(47, 91, 234, .25) }
+        .summary-hero:after { border-color: rgba(255, 255, 255, .2) }
+        .summary-hero .kicker { color: var(--sun) }
+        .summary-hero p, .ring span { color: #DCE5FF }
+        .ring { border-color: var(--sun); border-left-color: rgba(255, 255, 255, .2) }
+        .stat strong small { color: #A0A8B8 }
+        .safety { background: #FFF5E8; border-color: #FFD9B0 }
+        .safety-icon { color: var(--amber-text) }
+        .settings-number { color: var(--primary) }
+
+        /* lists, history, stats */
+        #intern-suggestions button:hover, #mentor-suggestions button:hover, #schooltype-suggestions button:hover, #city-suggestions button:hover { background: var(--primary-soft) }
+        #intern-suggestions, #mentor-suggestions, #schooltype-suggestions, #city-suggestions { box-shadow: 0 14px 30px rgba(27, 36, 51, .12) }
+        .upload-box { border-color: #C5CDDB; background: #F8FAFF }
+        .upload-button { background: var(--primary-soft); color: var(--primary-dark) }
+        .filter { background: #F8FAFF }
+        .stats-panel { background: linear-gradient(135deg, #FFFFFF, #F4F7FF) }
+        .stat-card { background: #FFFFFF }
+        .bar-track, .chart-bar-track { background: #E6EAF2 }
+        .bar-track i, .chart-bar-track i { background: linear-gradient(90deg, var(--primary), #6E8CF5) }
+        .history-card:hover { border-color: #C5CDDB; box-shadow: 0 10px 26px rgba(27, 36, 51, .07) }
+        .clickable-card:hover { background: #F5F8FF; border-color: var(--primary) }
+        .empty { border-color: #CBD3E1 }
+        .toast { box-shadow: 0 12px 28px rgba(27, 36, 51, .22) }
+        .mobile-footer { color: #7C8598 }
+        .creator-tag { background: var(--primary-soft); color: var(--primary-dark) }
+
+        /* login */
+        .auth-wrap { background: radial-gradient(circle at 12% 18%, rgba(47, 91, 234, .12), transparent 42%), radial-gradient(circle at 88% 82%, rgba(255, 210, 63, .2), transparent 42%), radial-gradient(circle at 85% 10%, rgba(31, 164, 99, .08), transparent 30%), var(--sand) }
+        .auth-card { box-shadow: 0 24px 60px rgba(27, 36, 51, .1) }
+        .auth-stripe { background: var(--logo-stripe) }
+        .auth-card button.primary { background: linear-gradient(120deg, #4B74F2, var(--primary) 55%, var(--primary-dark)); box-shadow: 0 10px 24px rgba(47, 91, 234, .3) }
+        .auth-card button.primary:hover:not(:disabled) { box-shadow: 0 14px 30px rgba(47, 91, 234, .36) }
+        .auth-link { color: var(--primary-dark) }
+
+
+        /* header: only the nav row sticks; the logo scrolls away. Actions never overflow sideways. */
+        .topbar { display: contents !important }
+        .topbar-inner { position: sticky; top: 0; z-index: 5; background: #FFFFFF; box-shadow: 0 6px 16px rgba(27, 36, 51, .05) }
+        .header-actions { align-items: center; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100% }
+        .header-actions::-webkit-scrollbar { display: none }
+        .header-actions button { white-space: nowrap; flex: none }
+        .who-am-i { white-space: nowrap; flex: none }
+        ::placeholder { color: #8E97A8; font-weight: 400; opacity: 1 }
+        @media(max-width:900px) {
+            .topbar-inner { flex-wrap: wrap; gap: 8px; padding: 8px 12px }
+            .header-actions { width: 100%; padding-bottom: 2px }
+        }
+        @media(max-width:700px) {
+            .national-logo-wrap img { height: 72px }
+            .who-am-i { font-size: 0; gap: 0 }
+            .who-am-i button { font-size: 12px }
+            .header-actions button { padding: 9px 12px }
+            .header-actions .save-btn { order: -1 }
+        }
+        .summary-hero h1 em, .summary-hero h2 em { color: var(--sun) }
+        .header-actions .save-btn { background: var(--primary); border-color: var(--primary); color: #FFFFFF }
+        .header-actions .save-btn:hover { background: var(--primary-dark) }
+        @media(max-width:760px) { .stats-cards .stat-card:last-child:nth-child(odd) { grid-column: 1 / -1 } }
+        @media(max-width:700px) { .history-head > div + div { margin-top: 16px } }
+        .history-card button[onclick^="deleteObservation"] { color: var(--red) }
+        .history-card button[onclick^="deleteObservation"]:hover { border-color: var(--red); background: var(--red-soft) }
+        @media(max-width:700px) {
+            .history-card { flex-wrap: wrap }
+            .history-card > div:first-child { flex: 1 1 60% }
+            .history-card > div:last-child { width: 100%; padding-top: 12px; border-top: 1px solid var(--line) }
+            .history-card > div:last-child button { flex: 1 }
+        }
+        /* PDF export */
+        #pdf-sheet { background: #FFFFFF }
+</style>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js">
     </script>
     <!-- Firebase (התחברות + מסד נתונים משותף) -->
@@ -2655,9 +2795,9 @@
             const noteSectionsHtml = SECTION_KEYS.map(key => {
                 const notes = draft.sectionNotes?.[key] || [];
                 if (!notes.length) return '';
-                return `<div style="margin-top:12px;padding:10px;border:1px solid #e7ded0;border-radius:8px;background:#f8f3ea"><strong>${SECTION_LABELS[key]} — הערות לשימור/שיפור</strong>${notes.map(n => `<div style="margin:4px 0"><span style="font-weight:700;color:#2f8f68">${esc(n.category)}:</span> ${esc(n.text)}</div>`).join('')}</div>`;
+                return `<div style="margin-top:12px;padding:10px;border:1px solid #E3E7EF;border-radius:8px;background:#F5F7FB"><strong>${SECTION_LABELS[key]} — הערות לשימור/שיפור</strong>${notes.map(n => `<div style="margin:4px 0"><span style="font-weight:700;color:#2F5BEA">${esc(n.category)}:</span> ${esc(n.text)}</div>`).join('')}</div>`;
             }).join('');
-            return `<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><p style="margin:0;color:#2f8f68;font-weight:800;font-size:12px;letter-spacing:.1em">כלי עבודה למדריכים</p><h1>סיכום תצפית חנ״ג</h1><p style="margin:0;color:#607378">מגרש שקט · שיעור תיכון בן 45 דקות</p></div><div style="color:#2f8f68;font-weight:800">${new Date().toLocaleDateString('he-IL')}</div></div><div class="pdf-meta"><div class="pdf-row"><strong>סטאז׳ר/ית</strong><span>${esc(draft.name)||'—'}</span></div><div class="pdf-row"><strong>מדריך/ה</strong><span>${esc(draft.mentor)||'—'}</span></div><div class="pdf-row"><strong>טלפון</strong><span>${esc(draft.phone)||'—'}</span></div><div class="pdf-row"><strong>בית ספר</strong><span>${esc(draft.school)||'—'}</span></div><div class="pdf-row"><strong>סוג בית ספר</strong><span>${esc(draft.schoolType)||'—'}</span></div><div class="pdf-row"><strong>עיר</strong><span>${esc(draft.city)||'—'}</span></div><div class="pdf-row"><strong>תאריך השיעור</strong><span>${esc(draft.date)||'—'}</span></div><div class="pdf-row"><strong>כיתה</strong><span>${esc(draft.className)||'—'}</span></div><div class="pdf-row"><strong>מספר תלמידים</strong><span>${esc(draft.studentCount)||'—'}</span></div><div class="pdf-row"><strong>מקום שיעור</strong><span>${esc(draft.lessonPlace==='אחר'?(draft.lessonPlaceOther||'אחר'):draft.lessonPlace)||'—'}</span></div><div class="pdf-row"><strong>שיעור ביחידת ההוראה</strong><span>${esc(draft.unitLesson==='אחר'?(draft.unitLessonOther||'אחר'):draft.unitLesson)||'—'}</span></div><div class="pdf-row"><strong>נושא</strong><span>${esc(draft.topic)||'—'}</span></div><div class="pdf-row"><strong>מטרת השיעור</strong><span>${esc(draft.goal)||'—'}</span></div></div>${(()=>{const r=calcScore(draft.statuses);return `<div style="margin-top:16px;padding:12px 14px;border:1px solid #e7ded0;border-radius:8px;background:#eef7f2;display:flex;justify-content:space-between"><strong>ציון התצפית: ${r.score===null?'—':r.score+'% ('+r.band+')'}</strong><span>${r.good} מתקיים · ${r.watch} שימור/שיפור · ${r.marked}/${r.total} מדדים נצפו</span></div>`})()}<h2 style="font-size:20px;margin:20px 0 6px">מדדי התצפית</h2>${settings.criteria.map((c,i)=>`<div class="pdf-criterion"><strong>${String(i+1).padStart(2,'0')}. ${esc(c.title)}</strong><span>${draft.statuses[c.id]?statusLabel[draft.statuses[c.id]]:'לא סומן'}${draft.notes[c.id]?' · '+esc(draft.notes[c.id]):''}</span></div>`).join('')}${noteSectionsHtml}<div class="pdf-summary"><h2>${esc(settings.feedback.strengthsLabel)}</h2><p>${esc(draft.strengths)||'—'}</p><h2>${esc(settings.feedback.improvementLabel)}</h2><p>${esc(draft.improvement)||'—'}</p><h2>${esc(settings.feedback.nextGoalLabel)}</h2><p>${esc(draft.nextGoal)||'—'}</p></div>`;
+            return `<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><p style="margin:0;color:#2F5BEA;font-weight:800;font-size:12px;letter-spacing:.1em">כלי עבודה למדריכים</p><h1>סיכום תצפית חנ״ג</h1><p style="margin:0;color:#5B6577">מגרש שקט · שיעור תיכון בן 45 דקות</p></div><div style="color:#2F5BEA;font-weight:800">${new Date().toLocaleDateString('he-IL')}</div></div><div class="pdf-meta"><div class="pdf-row"><strong>סטאז׳ר/ית</strong><span>${esc(draft.name)||'—'}</span></div><div class="pdf-row"><strong>מדריך/ה</strong><span>${esc(draft.mentor)||'—'}</span></div><div class="pdf-row"><strong>טלפון</strong><span>${esc(draft.phone)||'—'}</span></div><div class="pdf-row"><strong>בית ספר</strong><span>${esc(draft.school)||'—'}</span></div><div class="pdf-row"><strong>סוג בית ספר</strong><span>${esc(draft.schoolType)||'—'}</span></div><div class="pdf-row"><strong>עיר</strong><span>${esc(draft.city)||'—'}</span></div><div class="pdf-row"><strong>תאריך השיעור</strong><span>${esc(draft.date)||'—'}</span></div><div class="pdf-row"><strong>כיתה</strong><span>${esc(draft.className)||'—'}</span></div><div class="pdf-row"><strong>מספר תלמידים</strong><span>${esc(draft.studentCount)||'—'}</span></div><div class="pdf-row"><strong>מקום שיעור</strong><span>${esc(draft.lessonPlace==='אחר'?(draft.lessonPlaceOther||'אחר'):draft.lessonPlace)||'—'}</span></div><div class="pdf-row"><strong>שיעור ביחידת ההוראה</strong><span>${esc(draft.unitLesson==='אחר'?(draft.unitLessonOther||'אחר'):draft.unitLesson)||'—'}</span></div><div class="pdf-row"><strong>נושא</strong><span>${esc(draft.topic)||'—'}</span></div><div class="pdf-row"><strong>מטרת השיעור</strong><span>${esc(draft.goal)||'—'}</span></div></div>${(()=>{const r=calcScore(draft.statuses);return `<div style="margin-top:16px;padding:12px 14px;border:1px solid #E3E7EF;border-radius:8px;background:#EEF2FF;display:flex;justify-content:space-between"><strong>ציון התצפית: ${r.score===null?'—':r.score+'% ('+r.band+')'}</strong><span>${r.good} מתקיים · ${r.watch} שימור/שיפור · ${r.marked}/${r.total} מדדים נצפו</span></div>`})()}<h2 style="font-size:20px;margin:20px 0 6px">מדדי התצפית</h2>${settings.criteria.map((c,i)=>`<div class="pdf-criterion"><strong>${String(i+1).padStart(2,'0')}. ${esc(c.title)}</strong><span>${draft.statuses[c.id]?statusLabel[draft.statuses[c.id]]:'לא סומן'}${draft.notes[c.id]?' · '+esc(draft.notes[c.id]):''}</span></div>`).join('')}${noteSectionsHtml}<div class="pdf-summary"><h2>${esc(settings.feedback.strengthsLabel)}</h2><p>${esc(draft.strengths)||'—'}</p><h2>${esc(settings.feedback.improvementLabel)}</h2><p>${esc(draft.improvement)||'—'}</p><h2>${esc(settings.feedback.nextGoalLabel)}</h2><p>${esc(draft.nextGoal)||'—'}</p></div>`;
         }
 
         async function makePDF() {
