@@ -7,7 +7,7 @@
     <title>מגרש שקט · תצפית חנ״ג</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Rubik:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Karantina:wght@400;700&family=Noto+Sans+Hebrew:wdth,wght@62.5..100,500..800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
@@ -42,7 +42,7 @@
             margin: 0;
             background: radial-gradient(circle at 8% 0%, rgba(255, 255, 255, .82), transparent 32rem), var(--sand);
             color: var(--ink);
-            font-family: Assistant, Arial, sans-serif
+            font-family: Heebo, Arial, sans-serif
         }
         ::-webkit-scrollbar {
             width: 11px;
@@ -137,7 +137,7 @@
         }
         .brand strong {
             display: block;
-            font: 700 16px Rubik, Arial
+            font: 700 16px 'Noto Sans Hebrew', Heebo, Arial
         }
         .brand span {
             display: block;
@@ -232,7 +232,7 @@
         }
         h1,
         h2 {
-            font-family: Rubik, Arial, sans-serif;
+            font-family: 'Noto Sans Hebrew', Heebo, Arial, sans-serif;
             letter-spacing: -.02em
         }
         h1 {
@@ -339,7 +339,7 @@
             background: var(--green)
         }
         .nav b {
-            font: 700 11px Rubik;
+            font: 700 11px 'Noto Sans Hebrew';
             color: #aab6b4;
             margin-left: 6px
         }
@@ -561,7 +561,7 @@
         .number {
             padding-top: 3px;
             color: #9ca9a5;
-            font: 700 11px Rubik
+            font: 700 11px 'Noto Sans Hebrew'
         }
         .criterion h3 {
             font-size: 16px;
@@ -778,7 +778,7 @@
             justify-content: center
         }
         .ring strong {
-            font: 800 25px Rubik
+            font: 800 25px 'Noto Sans Hebrew'
         }
         .ring span {
             font-size: 11px;
@@ -812,7 +812,7 @@
         }
         .stat strong {
             display: block;
-            font: 800 34px Rubik;
+            font: 800 34px 'Noto Sans Hebrew';
             margin: 4px 0 8px
         }
         .stat strong small {
@@ -851,7 +851,7 @@
             border-top: 1px solid var(--line)
         }
         .settings-group h3 {
-            font: 700 19px Rubik;
+            font: 700 19px 'Noto Sans Hebrew';
             margin: 0 0 16px
         }
         .settings-item {
@@ -862,7 +862,7 @@
             border-bottom: 0
         }
         .settings-number {
-            font: 700 11px Rubik;
+            font: 700 11px 'Noto Sans Hebrew';
             color: var(--green);
             margin-bottom: 8px
         }
@@ -1067,7 +1067,7 @@
         .stat-card strong {
             display: block;
             margin-top: 5px;
-            font: 800 24px Rubik;
+            font: 800 24px 'Noto Sans Hebrew';
             color: var(--ink)
         }
         .stats-columns {
@@ -1170,7 +1170,7 @@
         }
         .mini-score strong {
             display: block;
-            font: 800 22px Rubik
+            font: 800 22px 'Noto Sans Hebrew'
         }
         .mini-score span {
             color: var(--ink-soft);
@@ -1233,7 +1233,7 @@
             padding: 48px;
             background: #fffdf9;
             color: #1B2433;
-            font-family: Assistant, Arial, sans-serif;
+            font-family: Heebo, Arial, sans-serif;
             direction: rtl
         }
         #pdf-sheet h1 {
@@ -1512,7 +1512,7 @@
             margin: 8px auto 18px;
         }
         .auth-card h1 {
-            font: 800 22px Rubik, Arial;
+            font: 800 22px 'Noto Sans Hebrew', Heebo, Arial;
             letter-spacing: -.02em;
             margin: 0 0 4px;
             text-align: center;
@@ -1756,6 +1756,18 @@
             .history-card > div:last-child { width: 100%; padding-top: 12px; border-top: 1px solid var(--line) }
             .history-card > div:last-child button { flex: 1 }
         }
+        /* fonts, same system as the scheduling site: Karantina for big headings, condensed Noto for small headings and numbers, Heebo for text */
+        body { font-stretch: 80% }
+        h1, h2, .auth-card h1, #pdf-sheet h1, #pdf-sheet h2 { font-family: 'Karantina', 'Noto Sans Hebrew', Arial, sans-serif; font-weight: 700; font-stretch: normal; letter-spacing: .005em }
+        h1 { font-size: clamp(46px, 6.6vw, 70px); line-height: .9 }
+        .panel h2, .history-head h2 { font-size: clamp(36px, 4.6vw, 46px); line-height: .95 }
+        .observe-head h2 { font-size: 46px; line-height: .95 }
+        .summary-hero h2 { font-size: clamp(44px, 6.4vw, 66px); line-height: .92 }
+        .auth-card h1 { font-size: 40px; line-height: 1 }
+        #pdf-sheet h1 { font-size: 52px; line-height: .95 }
+        #pdf-sheet h2 { font-size: 30px !important }
+        h3 { font-family: 'Noto Sans Hebrew', Heebo, Arial, sans-serif; font-weight: 700 }
+        .brand strong, .nav b, .number, .settings-number, .settings-group h3, .ring strong, .stat strong, .stat-card strong, .mini-score strong, h3 { font-stretch: 80% }
         /* PDF export */
         #pdf-sheet { background: #FFFFFF }
 </style>
