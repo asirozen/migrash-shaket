@@ -2570,9 +2570,9 @@
 
         async function markAllInSheet() {
             if (!SHEET_MARK_URL) { toast('לא הוגדרה כתובת סקריפט'); return; }
-            const list = history.filter(x => feedbackFilled(x) && (!x.guideEmail || !currentUser || x.guideEmail === currentUser.email));
+            const list = history.filter(x => feedbackFilled(x));
             if (!list.length) { toast('אין תצפיות עם משוב לסימון'); return; }
-            if (!confirm('לסמן בגיליון ' + list.length + ' תצפיות שכבר נשמרו?')) return;
+            if (!confirm('לסמן בגיליון ' + list.length + ' תצפיות מתוך ' + history.length + ' שנשמרו?')) return;
             for (const x of list) {
                 markObservationInSheet(x);
                 await new Promise(r => setTimeout(r, 1200));
