@@ -2184,7 +2184,7 @@
                 const d = (!historyFrom || x.date >= historyFrom) && (!historyTo || x.date <= historyTo);
                 return n && d;
             });
-            return `<section class="panel"><div class="history-head"><div><p class="kicker">ארכיון תצפיות</p><h2>היסטוריה</h2><p>${firebaseReady ? 'משותפות לכל המדריכים המחוברים.' : 'נשמרות במכשיר זה בלבד.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="secondary" onclick="exportExcel()">ייצוא Excel</button>${firebaseReady ? '<button class="secondary" onclick="loadHistoryFromCloud()">סנכרון ענן</button>' : ''}<button class="primary" onclick="newObservation()">+ תצפית חדשה</button></div></div><div class="filter"><input placeholder="חיפוש לפי שם סטאז׳ר/ית" value="${esc(historyQuery)}" oninput="filterHistory('query',this.value)"><input type="date" value="${esc(historyFrom)}" onchange="filterHistory('from',this.value)" aria-label="מתאריך"><input type="date" value="${esc(historyTo)}" onchange="filterHistory('to',this.value)" aria-label="עד תאריך"></div>${statsBlock(list)}<div class="history-list">${list.length ? list.map(historyCard).join('') : '<div class="empty">אין עדיין תצפיות התואמות לחיפוש.<br>לאחר שמירת תצפית היא תופיע כאן.</div>'}</div></section>`;
+            return `<section class="panel"><div class="history-head"><div><p class="kicker">ארכיון תצפיות</p><h2>היסטוריה</h2><p>${firebaseReady ? 'משותפות לכל המדריכים המחוברים.' : 'נשמרות במכשיר זה בלבד.'}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="secondary" onclick="exportExcel()">ייצוא Excel</button><button class="secondary" onclick="markAllInSheet()">סימון בגיליון</button>${firebaseReady ? '<button class="secondary" onclick="loadHistoryFromCloud()">סנכרון ענן</button>' : ''}<button class="primary" onclick="newObservation()">+ תצפית חדשה</button></div></div><div class="filter"><input placeholder="חיפוש לפי שם סטאז׳ר/ית" value="${esc(historyQuery)}" oninput="filterHistory('query',this.value)"><input type="date" value="${esc(historyFrom)}" onchange="filterHistory('from',this.value)" aria-label="מתאריך"><input type="date" value="${esc(historyTo)}" onchange="filterHistory('to',this.value)" aria-label="עד תאריך"></div>${statsBlock(list)}<div class="history-list">${list.length ? list.map(historyCard).join('') : '<div class="empty">אין עדיין תצפיות התואמות לחיפוש.<br>לאחר שמירת תצפית היא תופיע כאן.</div>'}</div></section>`;
         }
 
         function historyCard(x) {
@@ -2566,6 +2566,18 @@
                     .then(() => toast('הצפייה סומנה כבוצעה בגיליון הסטאז׳רים'))
                     .catch(() => toast('לא הצלחתי לסמן בגיליון, נסו שוב מאוחר יותר'));
             } catch (e) { /* לא חוסם את השמירה */ }
+        }
+
+        async function markAllInSheet() {
+            if (!SHEET_MARK_URL) { toast('לא הוגדרה כתובת סקריפט'); return; }
+            const list = history.filter(x => feedbackFilled(x) && (!x.guideEmail || !currentUser || x.guideEmail === currentUser.email));
+            if (!list.length) { toast('אין תצפיות עם משוב לסימון'); return; }
+            if (!confirm('לסמן בגיליון ' + list.length + ' תצפיות שכבר נשמרו?')) return;
+            for (const x of list) {
+                markObservationInSheet(x);
+                await new Promise(r => setTimeout(r, 1200));
+            }
+            toast('נשלחו ' + list.length + ' תצפיות לסימון בגיליון');
         }
 
         async function saveObservation() {
